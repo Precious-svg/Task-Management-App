@@ -1,0 +1,55 @@
+ [
+        {
+            "id": 1,
+            "title": "Web Optimization",
+            "details": "To develop an e-commerce web page",
+            "category": "work",
+            "status": "in progress",
+            "created_date": "2025-04-03T20:44:03Z",
+            "due_date": "2025-05-02T23:00:00Z",
+            "subtasks": [{ "title": "color", "details": "create a link", "status":"pending", "id": 1}]
+        },
+
+        {
+            "id": 2,
+            "title": "Dinner",
+            "details": "To develop an e-commerce web page",
+            "category": "Personal",
+            "status": "To do",
+            "created_date": "2025-02-13T10:44:00Z",
+            "due_date": "2025-06-02T11:00:00Z",
+            "subtasks": [{"title": "cooking", "details": "create a shopping list", "status":"pending", "id": 1}, {"title": "driving", "details": "drive to the mall", "status": "completed", "id": 2}]
+        },
+
+        {
+            "id": 3,
+            "title": "Running",
+            "details": "To develop an e-commerce web page",
+            "category": "Health",
+            "status": "Completed",
+            "created_date": "2025-04-13T10:44:00Z",
+            "due_date": "2025-06-02T11:00:00Z",
+            "subtasks": [{"title": "sneakers", "details": "wash sneakers", "status":"pending"}]
+        },
+        {
+            "id": 4,
+            "title": "jumping",
+            "details": "To develop an cooking web page",
+            "category": "Hfood",
+            "status": "Completed",
+            "created_date": "2025-04-13T10:44:00Z",
+            "due_date": "2025-06-02T11:00:00Z",
+            "subtasks": [{"title": "shoes", "details": "wash shoes", "status":"completed", "id": 1}]
+        },
+
+        {
+            "id": 5,
+            "title": "Working",
+            "details": "To chanage jobs",
+            "category": "career",
+            "status": "pending",
+            "created_date": "2025-04-13T10:44:00Z",
+            "due_date": "2025-06-02T11:00:00Z",
+            "subtasks": [{"title": "resume", "details": "review resume", "status":"pending", "id": 1}]
+        }
+    ]
