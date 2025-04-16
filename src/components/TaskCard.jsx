@@ -10,8 +10,8 @@ const TaskCard = ({task}) => {
         navigate(`/task/${task.id}`)
     }
   return (
-    <article onClick={handleCardClick} className='pl-3 py-4 bg-amber-800 flex-none'>
-        <h4>{task.title}</h4>
+    <article onClick={handleCardClick} className='flex flex-col items-center justify-evenly gap-2 px-4 py-4 bg-amber-800 rounded-xl flex-1 min-w-0'>
+        <h4 className='text-center'>{task.title}</h4>
         <div className="flex justify-bewteen">
           <span>{task.subtasks.length} Tasks</span>
           <div className="outerSpinner">

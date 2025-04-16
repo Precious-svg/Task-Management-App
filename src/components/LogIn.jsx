@@ -2,23 +2,38 @@ import React from 'react'
 
 const LogIn = () => {
   return (
-    <div id="logIn">
-        <header>Log In</header>
-        <form>
-            <input type="email" id="email" name="userEmail" value="Email"/>
-            <input type="password" id="pswrd" name="userPswrd" value="*****"/>
-            <div>
-                <input type="checkbox" id="rememberUser" name="rememberUser"/>
-                <label for="rememberUser">Remember me</label>
-                <a href="">Forgot password?</a>
+    <section className='bg-slate-50 w-[100%] h-full rounded-lg flex items-center justify-center'>
+       
+        <div id="logIn" className="w-full px-7 pb-7">
+           <div>
+                 <h2 className='text-3xl font-bold pt-6 pb-3'>Log In</h2>
+                 <p className="py-4">Complete the form below to sign in to your account.</p>
             </div>
-        </form>
-        <button type="submit">Log in</button>
-        <footer>
-            {/* task manager icons */}
-
+            <form className='flex flex-col justify-around items-center w-full gap-6'>
+                <input type="email" id="email" name="userEmail" placeholder="Email"  className="bg-gray-200 p-4 w-full rounded-lg"/>
+                <input type="password" id="pswrd" name="userPswrd" placeholder="*******"  className="bg-gray-200 p-4 w-full rounded-lg"/>
+                <div className='flex justify-between items-start w-full  pt-2 pb-4'>
+                    <div className='p'>
+                        <input type="checkbox" id="rememberUser" name="rememberUser" className="pr-2 mx-r-2"/>
+                        <label htmlFor="rememberUser" className="pl-2 align-middle">Remember me</label>
+                    </div>
+                    <a href="">Forgot password?</a>
+                </div>
+                <button type="submit" className='place-self-center w-full py-4 rounded-lg bg-indigo-600'>Log in</button>
+            </form>
+            <footer className='w-[100%] flex-col items-center justify-around' >
+            <div className='flex justify-between items-center w-full py-6'>
+                <span className='border-t-[2px] w-[33%] border-t-gray-200'></span>
+                <p className=''>Sign in with</p>
+                <span  className='border-t-[2px] w-[33%] border-t-gray-200'></span>
+            </div>
+            <ul className='flex justify-around items-center pb-2'>
+                <li><img src="" alt="gmail icon"/></li>
+                <li><img src="" alt="apple icon"/></li>
+            </ul>
         </footer>
-    </div>
+        </div>
+    </section>
   )
 }
 

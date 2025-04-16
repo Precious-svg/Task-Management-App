@@ -1,5 +1,5 @@
 import React from 'react'
-import {Route, createBrowserRouter, createRoutesFromElements, RouterProvider} from "react-router-dom";
+import {Routes, Route, createBrowserRouter, createRoutesFromElements, RouterProvider} from "react-router-dom";
 import HomePage from './pages/HomePage';
 import MainLayout from './layout/MainLayout';
 import AllTaskListPage from './pages/AllTaskListPage';
@@ -13,15 +13,17 @@ import AddNewTaskPage from './pages/AddNewTaskPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-  <Route path="/" element={<MainLayout/>}>
-    <Route index element={<HomePage/>}/>
+  <Route>
     <Route path="/welcome" element={<WelcomePage/>}/>
-    <Route path="/create-account" element={<CreateAccountPage/>}/>
-    <Route path="/logIn" element={<LogInPage/>}/>
-    <Route path="/seeAllTasks" element={<AllTaskListPage/>}/>
-    <Route path="/task/:id" element={<TaskDetailsPage/>}/>
-    <Route path="newTaskForm" element={<AddNewTaskPage/>}/>
-    <Route path="*" element={<NotFoundPage/>}/>
+      <Route path="/create-account" element={<CreateAccountPage/>}/>
+      <Route path="/logIn" element={<LogInPage/>}/>
+    <Route path="/" element={<MainLayout/>}>
+      <Route index element={<HomePage/>}/>
+      <Route path="/seeAllTasks" element={<AllTaskListPage/>}/>
+      <Route path="/task/:id" element={<TaskDetailsPage/>}/>
+      <Route path="newTaskForm" element={<AddNewTaskPage/>}/>
+      <Route path="*" element={<NotFoundPage/>}/>
+    </Route>
   </Route>)
 )
 

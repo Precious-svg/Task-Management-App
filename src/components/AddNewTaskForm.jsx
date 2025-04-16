@@ -1,21 +1,25 @@
 import React from 'react';
 import { useTasks } from '../Context/TaskContext';
+import { useState } from 'react';
 
 const AddNewTaskForm = () => {
     const {addTask} = useTasks();
 
-    const [title, setTitle] = useState();
-    const [details, setDetails] = useState();
-    const [dueDate, setDueDate] = useState()
+    const [title, setTitle] = useState("");
+    const [details, setDetails] = useState("");
+    const [dueDate, setDueDate] = useState("");
+    const [category, setCategory] = useState("")
 
-    const handleChange =(e) => {
+    const handleChange = (e) => {
         const {name, value} = e.target;
         if(name === "title"){
             setTitle(value);
-        } else if (name = "details"){
+        } else if (name === "details"){
             setDetails(value);
-        } else if(name === "due_Date"){
+        }  else if(name === "due_Date"){
             setDueDate(value);
+        }  else if(name === "category"){
+            setCategory(value);
         }
     }
     const handleSubmit =(e) =>{
@@ -28,29 +32,35 @@ const AddNewTaskForm = () => {
                 details,
                 status: "pending",
                 due_date : {dueDate},
-                created_at: Date.now(),
-                category: e.target.value
+                category
                
             }
             addTask(newTask);
         } else{alert("Please fill in the title and description")}
     }
   return (
-    <div>
-        <form>
-            <label for="title">Title</label>
-            <input type="text" id="title" name="title" value={title} onchange={handleChange} placeholder='Web optimization' required/>
-            <label for="details">Description</label>
-            <textarea id="details" name="details" value={details} onchange={handleChange} placeholder='Write something...'></textarea>
-            <label for="category">Choose a category:</label>
-            <select id="category" name="category" onChange={handleChange} value={category}>
+    <div className='bg-gray-100 w-full min-h-screen'>
+        <form className='flex flex-col gap-2 w-full p-7'>
+            
+            <label htmlFor="title" className='py-2'>Title</label>
+            <input type="text" id="title" name="title" value={title} onChange={handleChange} placeholder='Web optimization' required
+             className='w-full bg-gray-200 py-5 px-2 rounded-lg'
+            />
+          
+            <label htmlFor="details" className='pb-2 pt-4'>Description</label>
+            <textarea id="details" name="details" value={details} onChange={handleChange} placeholder='Write something...' 
+              className='w-full bg-gray-200 py-5 px-2 rounded-lg'>
+            </textarea>
+
+            <label htmlFor="category"  className='pb-2 pt-4'>Choose a category:</label>
+            <select id="category" name="category" className="bg-gray-300 py-3 rounded-lg" onChange={handleChange} value={category}>
                 <option value="work" >Work</option>
                 <option value="personal">Personal</option>
                 <option value="fitness">Fitness</option>
             </select>
-            <label for="due_date">Deadline</label>
-            <input id="due_date" name="due_date"type="datetime-local"/>
-            <button onClick={handleSubmit}type="submit">Create Task</button>
+            <label htmlFor="due_date"  className='pb-2 pt-4'>Deadline</label>
+            <input id="due_date" name="due_date"  className='py-2 mb-5 bg-gray-200 rounded-lg' onChange={handleChange} type="datetime-local"/>
+            <button onClick={handleSubmit}type="submit" className='place-self-center w-full py-4 rounded-lg bg-indigo-600'>Create Task</button>
         </form>
     </div>
   )

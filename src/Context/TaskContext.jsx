@@ -6,7 +6,7 @@ import taskDetails from "../taskDetails.json"
 const TaskContext = createContext();
 const TaskProvider = ({children}) => {
     const [tasks, setTasks] = useState(taskDetails);
-    const addTask = (newTask) => setTasks((prevTasks) => [...prevTasks, newTask]);
+    const addTask = (newTask) => setTasks((prevTasks) => [...prevTasks, {...newTask, created_at: Date.now().toISOString()}]);
 
     const removeTask = (taskId) => {
         setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId))
