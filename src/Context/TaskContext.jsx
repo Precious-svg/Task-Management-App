@@ -1,15 +1,62 @@
 import React from 'react';
-import {createContext, useState, useEffect, useContext} from "react";
-import taskDetails from "../taskDetails.json"
+import { collection, onSnapshot, addDoc, deleteDoc, updateDoc, doc, query, where} from "firebase/firestore";
+import { db } from '../services/firebase';
+import {createContext, useState, useEffect, useContext} from "react"; 
+import { useAuth } from "./AuthContext"
+// import taskDetails from "../taskDetails.json"
 
 
 const TaskContext = createContext();
 const TaskProvider = ({children}) => {
-    const [tasks, setTasks] = useState(taskDetails);
-    const addTask = (newTask) => setTasks((prevTasks) => [...prevTasks, {...newTask, created_at: Date.now().toISOString()}]);
+    const { currentUser } = useAuth();
+    const [tasks, setTasks] = useState([]);
+    const [loading, setLoading] = useState(true)
 
-    const removeTask = (taskId) => {
-        setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId))
+    useEffect(() => {
+        if(!currentUser) return; //wait until user is authenticated
+        const q = query(collection(db, "tasks"), where("userId", "==", currentUser.uid));
+
+
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const fetchedTasks = snapshot.docs.map(doc => ({
+                id: doc.id, ...doc.data()
+            }));
+            setTasks(fetchedTasks);
+        });
+        return () => unsubscribe();
+    }, [currentUser]); //You convert the snapshot into a nice array of task objects with their id and data, then store it in tasks.
+    
+    const addTask = async (newTask) => {
+        if(!currentUser) return;
+        try{
+            await addDoc(collection(db, "tasks"), {
+                ...newTask, 
+                userId: currentUser.uid,
+                created_at: Date.now
+            });
+        } catch(error){
+            console.error("Error adding task:", error)
+        }
+    }
+    
+   
+
+    const removeTask = async(taskId) => {
+        try{
+            await deleteDoc(doc(db, "tasks", taskId))
+        } catch(error){
+            console.error("Error deleting file:", error)
+        }
+    }
+
+    const updateTask = async(taskId, updatedData) => {
+       
+        try{
+            const taskRef = doc(db, "tasks", taskId);
+            await updateDoc(taskRef, updatedData);
+        }catch(error){
+            console.error("Error updating task data:", error)
+        }
     }
 
 
@@ -52,36 +99,59 @@ const TaskProvider = ({children}) => {
 
     // functions for adding, removing and editind subtasks
 
-    const addNewSubtasks = (newSubtask, taskId) => {
-        setTasks((prevTasks) => 
-          prevTasks.map((task) =>{
-                if(task.id === taskId){
-                    const updatedSubTasks =  [
-                        ...task.subtasks,
-                        {...newSubtask, id: task.subtasks.length + 1, status: "pending"}
-                    ];
-                    return {...task, subtasks: updatedSubTasks}
+    const addNewSubtasks = async(newSubtask, taskId) => {
+        const taskRef = doc(db, "tasks", taskId);
+        const taskSnap = await getDoc(doc);
+        if (taskSnap.exists()){
+            const taskData = taskSnap.data();
+            const updatedSubtasks = [
+                ...(taskData.subtasks || []),
+                {
+                    ...newSubtask,
+                    id: uuidv4(),
+                    status: "pending"
                 }
-                return task;
-            })
-          
-        );
+            ];
+            await updateDoc(taskRef, {
+                subtasks: updatedSubtasks
+            });
+
+        } 
     };
 
-    const deleteSubtask = (subtaskId, taskId) => {
-        setTasks((prevTasks) =>
-            prevTasks.map((task) => {
-                if(task.id === taskId){
-                    const filteredSubtasks = task.subtasks.filter((subtask) => (subtask.id !== subtaskId))
-                    return {...task, subtasks: filteredSubtasks}
-                }  
-             return task;
-            })
-        );
-    };
+    const deleteSubtask = async(subtaskId, taskId) => {
+        const taskRef = doc(db, "tasks", taskId);
+       const  taskSnap = await getDoc(doc);
+       if(taskSnap.exists()){
+        const taskData = taskSnap.data()
+        const taskSubtasks = taskData.subtasks;
+        const filteredSubtasks = taskSubtasks.filter((taskSubtask) => (taskSubtask.id !== subtaskId));
+        const updatedSubtasks = {
+            ...taskData,
+            subtasks: filteredSubtasks
+        };
+
+        await updateDoc(taskRef, {
+            subtasks: updatedSubtasks
+        });
+        
+       }
+    }
+
+    // const deleteSubtask = (subtaskId, taskId) => {
+    //     setTasks((prevTasks) =>
+    //         prevTasks.map((task) => {
+    //             if(task.id === taskId){
+    //                 const filteredSubtasks = task.subtasks.filter((subtask) => (subtask.id !== subtaskId))
+    //                 return {...task, subtasks: filteredSubtasks}
+    //             }  
+    //          return task;
+    //         })
+    //     );
+    // };
 
   return (
-    <TaskContext.Provider value={{tasks, addTask, removeTask, toggleSubtaskStatus, getTaskStatus, addNewSubtasks, deleteSubtask}}>
+    <TaskContext.Provider value={{tasks, addTask, removeTask, updateDoc, toggleSubtaskStatus, getTaskStatus, addNewSubtasks, deleteSubtask}}>
         {children}
    </TaskContext.Provider>
   )
