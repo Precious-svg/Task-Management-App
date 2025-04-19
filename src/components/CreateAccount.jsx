@@ -1,42 +1,51 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom';
-import {useState} from "react"
+import {useAuth} from "../Context/AuthContext";
+import {useState} from "react";
+import { useNavigate } from 'react-router-dom';
 const CreateAccount = () => {
+    const {signUp} = useAuth();
+    const navigate = useNavigate();
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [error, setError] = useState("")
 
     const handleChange = (e) =>{
        const  {name, value} = e.target;
-       if(name = "bothNames"){
+       if(name === "bothNames"){
         setFullName(value);
-       } else if(name = "email"){
+       } else if(name === "email"){
         setEmail(value)
-       } else if (name = "pswrd"){
+       } else if (name === "pswrd"){
         setPassword(value)
-       } else if(name = "confirmpswrd"){
+       } else if(name === "confirmpswrd"){
         setConfirmPassword(value)
        }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if(fullName & email){
-            if (password.value === confirmPassword.value){
-                const newUser = {
-                    fullName,
-                    email,
-                    password,
-                    confirmPassword, 
-                    userId: 1
-                } 
-                } else {
-                    alert (alert, "both passwords shoul match!")
+        
+            if(!fullName || !email) {
+                alert("Please enter your fullname and email");
+                return;
             }
-        } else {
-            Alert (alert, "Please fill in your full name and email address")
-        }
+            if (password != confirmPassword) {
+                alert("Both passwords should match");
+                return;
+            }   
+            try{
+                 await signUp(email, password);
+                 navigate("/");
+        
+            }catch(error){
+                    setError("Failed to create an account");
+            }
+                
+            
+        
     }
   return (
     <div id="createAccount" className='bg-slate-50 w-[100%] h-full rounded-lg'>
@@ -65,6 +74,7 @@ const CreateAccount = () => {
                 <button type="submit" className="bg-indigo-600 py-3 rounded-lg text-white text-base w-full " onClick={handleSubmit}>Sign up</button>
             </form>
         </main>
+
         <footer className='w-full px-7 flex-col items-center justify-around' >
             <div className='flex justify-between items-center w-full pb-4'>
                 <span className='border-t-[2px] w-[33%] border-t-gray-200'></span>

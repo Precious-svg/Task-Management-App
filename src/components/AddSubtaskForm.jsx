@@ -30,13 +30,15 @@ const AddSubtaskForm = ({taskId}) => {
         } else alert("please fiull in the title and descriptrion")
     }
   return (
-    <div>
-        <form>
-            <label htmlFor="title">Title</label>
-            <input type="text" id="title" name="title" value={title} onChange={handleChange} placeholder='Web optimization' required/>
-            <label htmlFor="details">Description</label>
-            <textarea id="details" name="details" value={details} onChange={handleChange} placeholder='Write something...'></textarea>
-            <button onClick={handleSubmit}type="submit">Create Subtask</button>
+    <div >
+        <form className='flex flex-col items-start justify-center mx-auto'>
+            <label htmlFor="title" className='py-4'>Title</label>
+            <input type="text" id="title" name="title" value={title} onChange={handleChange} placeholder='Web optimization' required
+             className="bg-white p-2" />
+            <label htmlFor="details" className='py-4'>Description</label>
+            <textarea id="details" name="details" value={details} onChange={handleChange} placeholder='Write something...'
+             className='bg-white py-3  px-2 rounded-md'></textarea>
+            <button onClick={handleSubmit}type="submit" className='bg-indigo-600 p-2 rounded-md my-2'>Create Subtask</button>
         </form>    
     </div>
   )
