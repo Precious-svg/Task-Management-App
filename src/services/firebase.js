@@ -5,7 +5,7 @@ import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage"
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDX3juWKWA2NU-pv7VA9qyO3LPeYYRZV9Y",
+    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: "task-management-app-cdd2f.firebaseapp.com",
     projectId: "task-management-app-cdd2f",
     storageBucket: "task-management-app-cdd2f.firebasestorage.app",
