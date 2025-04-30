@@ -1,10 +1,11 @@
 import React from 'react';
 import { useTasks } from '../Context/TaskContext';
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom"
 
 const AddNewTaskForm = () => {
-    const {addTask} = useTasks();
-
+    const { addTask } = useTasks();
+    const navigate = useNavigate();
     const [title, setTitle] = useState("");
     const [details, setDetails] = useState("");
     const [dueDate, setDueDate] = useState("");
@@ -16,26 +17,36 @@ const AddNewTaskForm = () => {
             setTitle(value);
         } else if (name === "details"){
             setDetails(value);
-        }  else if(name === "due_Date"){
+        }  else if(name === "due_date"){
             setDueDate(value);
         }  else if(name === "category"){
             setCategory(value);
         }
     }
-    const handleSubmit =(e) =>{
+    const handleSubmit = async (e) =>{
         e.preventDefault();
 
-        if(title & details){
+        if(title && details){
             const newTask = {
-                id: Date.now(),
                 title,
                 details,
                 status: "pending",
-                due_date : {dueDate},
-                category
+                due_date : dueDate,
+                category,
+                subtasks: []
                
             }
-            addTask(newTask);
+
+            console.log("Submitting task:", newTask);
+            try{
+                const taskId = await addTask(newTask);
+                console.log("Returned task ID:", taskId);
+               if(taskId){
+                navigate(`/task/${taskId}`);
+               };
+            }catch(error){
+                console.error("Unable to go to task page:", error);
+            }
         } else{alert("Please fill in the title and description")}
     }
   return (
@@ -60,7 +71,7 @@ const AddNewTaskForm = () => {
             </select>
             <label htmlFor="due_date"  className='pb-2 pt-4'>Deadline</label>
             <input id="due_date" name="due_date"  className='py-2 mb-5 bg-gray-200 rounded-lg' onChange={handleChange} type="datetime-local"/>
-            <button onClick={handleSubmit}type="submit" className='place-self-center w-full py-4 rounded-lg bg-indigo-600'>Create Task</button>
+            <button onSubmit={handleSubmit}type="submit" className='place-self-center w-full py-4 rounded-lg bg-indigo-600'>Create Task</button>
         </form>
     </div>
   )

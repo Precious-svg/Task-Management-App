@@ -1,33 +1,42 @@
 import React from 'react';
 import { useTasks } from '../Context/TaskContext';
 import { useState } from 'react'; 
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 const AddSubtaskForm = ({taskId}) => {
     const { id } = useParams();
-    const {addNewSubtasks, tasks} = useTasks();
-    const task = tasks.find((task) => task.id === Number(taskId));
+    const {addNewSubtasks} = useTasks();
     const [title, setTitle] = useState("");
     const [details, setDetails] = useState("");
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const {name, value} = e.target;
-        if(title === "title"){
+        if(name === "title"){
             setTitle(value)
-        } else if (details === "details"){
+        } else if (name === "details"){
             setDetails(value);
         }
     }
 
-    const handleSubmit = (e) => {
-        e.prevent.default;
-        if(title & details){
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if(title && details){
             const newSubtask = {
                 title,
                 details,
                 status: "pending"
             }
-            addNewSubtasks(newSubtask, taskId={taskId})
-        } else alert("please fiull in the title and descriptrion")
+            console.log("Submitting task:", newSubtask);
+            try{
+                await addNewSubtasks(newSubtask, id);
+                if(id){
+                    navigate(`/task/${id}`);
+                };
+            } catch(error){
+                console.error("Unable to go to task page:", error);
+            }
+            
+        } else {alert("please fill in the title and descriptrion")}
     }
   return (
     <div >
@@ -38,7 +47,7 @@ const AddSubtaskForm = ({taskId}) => {
             <label htmlFor="details" className='py-4'>Description</label>
             <textarea id="details" name="details" value={details} onChange={handleChange} placeholder='Write something...'
              className='bg-white py-3  px-2 rounded-md'></textarea>
-            <button onClick={handleSubmit}type="submit" className='bg-indigo-600 p-2 rounded-md my-2'>Create Subtask</button>
+            <button onSubmit={handleSubmit} className='bg-indigo-600 p-2 rounded-md my-2'>Create Subtask</button>
         </form>    
     </div>
   )

@@ -4,13 +4,12 @@ import {useAuth} from "../Context/AuthContext";
 import {useState} from "react";
 import { useNavigate } from 'react-router-dom';
 const CreateAccount = () => {
-    const {signUp} = useAuth();
+    const {signUp, error} = useAuth();
     const navigate = useNavigate();
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [error, setError] = useState("")
 
     const handleChange = (e) =>{
        const  {name, value} = e.target;
@@ -28,21 +27,22 @@ const CreateAccount = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-            if(!fullName || !email) {
-                alert("Please enter your fullname and email");
-                return;
-            }
-            if (password != confirmPassword) {
-                alert("Both passwords should match");
-                return;
-            }   
-            try{
-                 await signUp(email, password);
-                 navigate("/");
+        if(!fullName || !email) {
+            alert("Please enter your fullname and email");
+            return;
+        }
+        if (password != confirmPassword) {
+            alert("Both passwords should match");
+            return;
+        }   
+            
+        await signUp(email, password, fullName);
+        if(!error){
+            navigate("/")
+
+        };
         
-            }catch(error){
-                    setError("Failed to create an account");
-            }
+            
                 
             
         
@@ -69,9 +69,9 @@ const CreateAccount = () => {
 
                 <div required className="p-4 w-full">
                     <input type="checkbox" id="terms" name="terms" required/>
-                    <label for="terms" className='px-2 align-baseline'><a href="">I agree to the terms and conditions.</a></label>
+                    <label htmlFor="terms" className='px-2 align-baseline'><a href="">I agree to the terms and conditions.</a></label>
                 </div>
-                <button type="submit" className="bg-indigo-600 py-3 rounded-lg text-white text-base w-full " onClick={handleSubmit}>Sign up</button>
+                <button type="submit" className="bg-indigo-600 py-3 rounded-lg text-white text-base w-full" onClick={handleSubmit}>Sign up</button>
             </form>
         </main>
 

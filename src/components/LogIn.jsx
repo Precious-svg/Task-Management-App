@@ -2,24 +2,30 @@ import React from 'react';
 import {useAuth} from "../Context/AuthContext"
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 
 const LogIn = () => {
 
-    const { logIn } = useAuth;
+    const { logIn, error } = useAuth();
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("")
-    const [error, setError] = useState("")
+
 
     const handleLogIn = async (e) => {
         e.preventDefault();
-        try{
-            await logIn(email, password);
-            navigate("/")
-        }catch(error){
-            setError("Failed to log in.")
+        
+        console.log("Attempting to log in with:", email, password);
+        if(!email || !password){
+            console.log("please enter email and password");
+            return;
         }
-    }
+         await logIn(email, password);
+         if(!error) {
+            navigate("/")
+        }
+        
+    };
 
   return (
     <section className='bg-slate-50 w-[100%] h-full rounded-lg flex items-center justify-center'>
@@ -30,10 +36,10 @@ const LogIn = () => {
                  <p className="py-4">Complete the form below to sign in to your account.</p>
             </div>
             <form className='flex flex-col justify-around items-center w-full gap-6'>
-                <input type="email" id="email" name="userEmail" placeholder="Email" value={email} onChange={() =>setEmail(e.target.value) }
+                <input type="email" id="email" name="userEmail" placeholder="Email" value={email} onChange={(e) =>setEmail(e.target.value) }
                  className="bg-gray-200 p-4 w-full rounded-lg"/>
 
-                <input type="password" id="pswrd" name="userPswrd" placeholder="*******"  value={password} onChanged={() => setPassword(e.target.value)}
+                <input type="password" id="pswrd" name="userPswrd" placeholder="*******"  value={password} onChange={(e) => setPassword(e.target.value)}
                  className="bg-gray-200 p-4 w-full rounded-lg"/>
                  {error && <p>{error}</p>}
 
@@ -42,10 +48,11 @@ const LogIn = () => {
                         <input type="checkbox" id="rememberUser" name="rememberUser" className="pr-2 mx-r-2"/>
                         <label htmlFor="rememberUser" className="pl-2 align-middle">Remember me</label>
                     </div>
-                    <a href="">Forgot password?</a>
+                    <NavLink to="/forgotPassword">Forgot password?</NavLink>
                 </div>
 
                 <button type="submit" className='place-self-center w-full py-4 rounded-lg bg-indigo-600' onClick={handleLogIn}>Log in</button>
+                {error && <p className='text-red-400 text-[14px] mt-3'>{error}</p>}
             </form>
             <footer className='w-[100%] flex-col items-center justify-around' >
             <div className='flex justify-between items-center w-full py-6'>

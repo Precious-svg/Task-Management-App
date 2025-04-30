@@ -1,43 +1,56 @@
-import React from 'react'
-import { useTasks } from '../Context/TaskContext';
+import React from 'react';
+import { doc, getDoc } from "firebase/firestore";
+import { db } from '../services/firebase';
 import Subtask from "./Subtask"
 import AddSubtaskForm from './AddSubtaskForm';
-import { useState } from 'react';
-import { FaArrowLeft } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
 import { FaBell } from 'react-icons/fa6';
-import { FaEllipsisV } from 'react-icons/fa';
 import { FaClockRotateLeft } from 'react-icons/fa6';
 import { FaPlus } from 'react-icons/fa6';
+import NavBar from './NavBar';
 
 // full description  and details of the task created
 const FullTaskCard = ({taskId}) => {
-    const {tasks, updateTaskStatus, removeTask} = useTasks();
-   
-    const task = tasks.find((t) => t.id === parseInt(taskId));
-   if (!task) return <div>Task not found</div>;
-    const subtasksLength = task.subtasks?.length || 0;
-
-
+    const [task, setTask] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
+    const pageOptions = [
+        {label: "edit", onClick: () => alert("edit")},
+        {label: "delete", onClick: () => alert("delete")}
+    ]
+   
     const handleButtonClick = () => {
        setShowForm((prevState) => !prevState)
     }
-    if(!task) return <div>Task not found</div>
+    useEffect(() => {
+        const fetchTask = async () => {
+           try {
+            const taskRef = doc(db, "tasks", taskId);
+            const taskSnap = await getDoc(taskRef);
+            if(taskSnap.exists()){
+                setTask(taskSnap.data())
+            } else(console.log("Task not found"))
+           } catch(error){
+            console.error("Error fetching task:", error)
+           } finally{
+            setLoading(false);
+           }
+        };
+        fetchTask();
+}, [taskId])
+    const subtasksLength = task?.subtasks?.length || 0;  
+    if(loading) return <div>Loading...</div>
+    if (!task) return <div>Task not found</div>;
+
   return (
     <div className='bg-gray-100 w-full min-h-screen flex flex-col px-7'>
         
-          <header className='w-full py-7'>
-                <nav className="flex gap-3 items-center justify-between">
-                    <FaArrowLeft/>
-                    <div className='flex gap-4'>
-                        <FaBell/>
-                        <FaEllipsisV/>
-                    </div>
-                </nav>
+          <header className="flex w-full justify-between items-center fixed top-0 left-0  h-15 right-0 px-4 py-4">
+              <NavBar pageOptions={pageOptions}/>
+              <button className='text-xl'><FaBell/></button>
           </header>
 
-     
-           <main>
+           <main className='pt-15'>
                 <h2 className='font-bold text-2xl py-2'>{task.title}</h2>
                 <section>
                     <h3 className='font-semibold text-xl my-2'>Details:</h3>
@@ -53,20 +66,19 @@ const FullTaskCard = ({taskId}) => {
                        </div> 
                     </div>
                 </section>
-                <section className="all-subtasks-container py-6">
-                   {subtasksLength >= 0 ? (task.subtasks.map((subtask) =>(
-                        <div className='mx-auto'>
-                            <Subtask key={subtask.id} taskId={task.id} subtask={subtask}/>
-                            <button onClick={handleButtonClick} className='px-6 py-3 w-full text-center rounded-lg border-dotted border-2 border-black  bg-gray-300'>
-                              <span className='mx-auto align-center'>
-                                  <FaPlus size={20}/>
-                             </span>
-                                {showForm &&  <AddSubtaskForm  taskId={task.id}/>}
-                            </button>
+                <section className="all-subtasks-container py-6 flex flex-col gap-4 justify-evenly">
+                   {subtasksLength > 0 ? (task.subtasks.map((subtask, index) =>(
+                        <div className='mx-auto' key={subtask.id || `${subtask.title}-${index}`}>
+                            <Subtask taskId={task.id} subtask={subtask}/>
                         </div>
-                    ))) : (<button onClick={handleButtonClick}><FaPlus size={20}/></button>)}
-                
+                    ))) : (<p>No subtasks yet</p>)}
                 </section>
+                <button onClick={handleButtonClick} className='px-6 py-3 text-center rounded-lg border-dotted border-2 border-black flex items-center justify-center  bg-gray-300'>
+                    <span className='mx-auto text-center'>
+                        <FaPlus size={20}/>
+                    </span>
+                </button>
+                {showForm &&  <AddSubtaskForm  taskId={task.id}/>}
          </main>
     
  </div>

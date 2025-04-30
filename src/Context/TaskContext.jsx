@@ -1,8 +1,10 @@
 import React from 'react';
 import { collection, onSnapshot, addDoc, deleteDoc, updateDoc, doc, query, where} from "firebase/firestore";
 import { db } from '../services/firebase';
+import { getDoc } from "firebase/firestore";
 import {createContext, useState, useEffect, useContext} from "react"; 
-import { useAuth } from "./AuthContext"
+import { useAuth } from "./AuthContext";
+import { v4 as uuidv4 } from 'uuid'; 
 // import taskDetails from "../taskDetails.json"
 
 
@@ -22,18 +24,28 @@ const TaskProvider = ({children}) => {
                 id: doc.id, ...doc.data()
             }));
             setTasks(fetchedTasks);
+            setLoading(false);
+        }, (error) => {
+            console.error("Error fetching tasks:", error);
+            setLoading(false)
         });
         return () => unsubscribe();
     }, [currentUser]); //You convert the snapshot into a nice array of task objects with their id and data, then store it in tasks.
     
     const addTask = async (newTask) => {
-        if(!currentUser) return;
+        if(!currentUser){
+            console.warn("No currentUser found, not adding task.");
+            return;
+        };
         try{
-            await addDoc(collection(db, "tasks"), {
+           const docRef = await addDoc(collection(db, "tasks"), {
                 ...newTask, 
                 userId: currentUser.uid,
-                created_at: Date.now
+                created_at: Date.now()
             });
+            console.log("Firebase docRef returned:", docRef);
+            console.log("Task added with ID:", docRef.id);
+            return docRef.id;
         } catch(error){
             console.error("Error adding task:", error)
         }
@@ -63,27 +75,30 @@ const TaskProvider = ({children}) => {
 
     // to update the subtask stautus
 
-    const toggleSubtaskStatus = (taskId, subtaskId, newStatus) =>{
-        setTasks((prevTasks) => {
-            return prevTasks.map((task) => {
-                if (task.id !== taskId) return task;
-
-                const updatedSubtasks = task.subtasks.map((subtask) => {
-                   if(subtask.id !== subtaskId) return subtask;
-                    
-                    return {
-                        ...subtask, status: newStatus}
-                });
-                const updatedTaskStatus = getTaskStatus(updatedSubtasks);
-                
-               return  {
-                    ...task, 
-                    subtasks: updatedSubtasks,
-                    status: updatedTaskStatus
-                }
-                
+    const toggleSubtaskStatus = async (taskId, subtaskId, newStatus) => {
+        try {const taskRef = doc(db, "tasks", taskId);
+        const taskSnap = await getDoc(taskRef);
+        if(taskSnap.exists()){
+            const taskData = taskSnap.data();
+            const taskSubtasks = taskData.subtasks;
+            const updatedSubtasks = taskSubtasks.map((subtask) =>{
+                if(subtask.id !== subtaskId) return subtask;
+                return{
+                    ...subtask, status: newStatus
+                };
             });
-        });
+            const updatedTaskStatus = getTaskStatus(updatedSubtasks);
+            await updateDoc(taskRef, {
+                subtasks: updatedSubtasks,
+                status: updatedTaskStatus
+            });
+            console.log("Subtask status updated successfully.")
+        }else{
+            console.error("Task not found")
+        }} catch(error){
+            console.error("unable to update subtask sttaus:", error);
+            throw error
+        }
     };
     // to update the task Status
     const getTaskStatus = (subtasks) => {
@@ -91,17 +106,16 @@ const TaskProvider = ({children}) => {
         const totalSubtasks = subtasks.length;
         const completedSubtasks  = subtasks.filter((subtask) => subtask.status === "completed").length;
 
-        if(completedSubtasks === 0) return "pending"
+        if(completedSubtasks > 0) return "in progress"
         if(totalSubtasks === completedSubtasks) return "completed"
-        return "in progress"
-        console.log (tasks)
+        return "pending"
     }
 
     // functions for adding, removing and editind subtasks
 
     const addNewSubtasks = async(newSubtask, taskId) => {
         const taskRef = doc(db, "tasks", taskId);
-        const taskSnap = await getDoc(doc);
+        const taskSnap = await getDoc(taskRef);
         if (taskSnap.exists()){
             const taskData = taskSnap.data();
             const updatedSubtasks = [
@@ -121,37 +135,24 @@ const TaskProvider = ({children}) => {
 
     const deleteSubtask = async(subtaskId, taskId) => {
         const taskRef = doc(db, "tasks", taskId);
-       const  taskSnap = await getDoc(doc);
+       const  taskSnap = await getDoc(taskRef);
        if(taskSnap.exists()){
-        const taskData = taskSnap.data()
-        const taskSubtasks = taskData.subtasks;
-        const filteredSubtasks = taskSubtasks.filter((taskSubtask) => (taskSubtask.id !== subtaskId));
-        const updatedSubtasks = {
-            ...taskData,
-            subtasks: filteredSubtasks
-        };
+        const taskData = taskSnap.data();
+        const taskSubtasks = taskData.subtasks || [];
+        const filteredSubtasks = taskSubtasks.filter((subtask) => (subtask.id !== subtaskId));
+        
 
         await updateDoc(taskRef, {
-            subtasks: updatedSubtasks
+            subtasks: filteredSubtasks
         });
         
-       }
+       };
     }
 
-    // const deleteSubtask = (subtaskId, taskId) => {
-    //     setTasks((prevTasks) =>
-    //         prevTasks.map((task) => {
-    //             if(task.id === taskId){
-    //                 const filteredSubtasks = task.subtasks.filter((subtask) => (subtask.id !== subtaskId))
-    //                 return {...task, subtasks: filteredSubtasks}
-    //             }  
-    //          return task;
-    //         })
-    //     );
-    // };
+    
 
   return (
-    <TaskContext.Provider value={{tasks, addTask, removeTask, updateDoc, toggleSubtaskStatus, getTaskStatus, addNewSubtasks, deleteSubtask}}>
+    <TaskContext.Provider value={{tasks, addTask, removeTask, updateTask, updateDoc, toggleSubtaskStatus, getTaskStatus, addNewSubtasks, deleteSubtask}}>
         {children}
    </TaskContext.Provider>
   )

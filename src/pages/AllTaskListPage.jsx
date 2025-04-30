@@ -4,7 +4,7 @@ import TasksList from '../components/TasksList'
 const AllTaskListPage = () => {
   return (
     <div>
-        <TasksList/>
+        <TasksList variant="full"/>
     </div>
   )
 }
