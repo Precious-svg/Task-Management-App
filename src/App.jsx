@@ -13,6 +13,7 @@ import AddNewTaskPage from './pages/AddNewTaskPage';
 import { Navigate } from "react-router-dom";
 import ProtectedRoute from './components/ProtectedRoute';
 import ForgotPassWordPage from './pages/ForgotPassWordPage';
+import EditTaskPage from './pages/EditTaskPage';
 
 const App = () => {
   const { currentUser} = useAuth();
@@ -29,6 +30,7 @@ const App = () => {
             <Route path="/seeAllTasks" element={<ProtectedRoute><AllTaskListPage/></ProtectedRoute>}/>
             <Route path="/task/:id" element={<ProtectedRoute><TaskDetailsPage/></ProtectedRoute>}/>
             <Route path="newTaskForm" element={currentUser ? <AddNewTaskPage/> : <Navigate to="/logIn"/>}/>
+            <Route path="edit-task/:id" element={ currentUser ? <EditTaskPage/> : <Navigate to="/logIn"/>}/>
          </Route>
          <Route path="*" element={<NotFoundPage/>}/>
     </Route>)

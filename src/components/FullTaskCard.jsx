@@ -8,17 +8,23 @@ import { FaBell } from 'react-icons/fa6';
 import { FaClockRotateLeft } from 'react-icons/fa6';
 import { FaPlus } from 'react-icons/fa6';
 import NavBar from './NavBar';
+import { useNavigate } from 'react-router-dom';
+import EditSubtask from './EditSubtask';
+import Loader from './Loader';
 
 // full description  and details of the task created
 const FullTaskCard = ({taskId}) => {
     const [task, setTask] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
+
+    const navigate = useNavigate();
+
     const pageOptions = [
-        {label: "edit", onClick: () => alert("edit")},
+        {label: "edit", onClick: () => navigate(`/edit-task/${task.id}`)},
         {label: "delete", onClick: () => alert("delete")}
     ]
-   
+    
     const handleButtonClick = () => {
        setShowForm((prevState) => !prevState)
     }
@@ -28,7 +34,7 @@ const FullTaskCard = ({taskId}) => {
             const taskRef = doc(db, "tasks", taskId);
             const taskSnap = await getDoc(taskRef);
             if(taskSnap.exists()){
-                setTask(taskSnap.data())
+                setTask({id: taskSnap.id, ...taskSnap.data()})
             } else(console.log("Task not found"))
            } catch(error){
             console.error("Error fetching task:", error)
@@ -37,9 +43,22 @@ const FullTaskCard = ({taskId}) => {
            }
         };
         fetchTask();
-}, [taskId])
+   },     [taskId])
+
+
+   const handleSubtaskNewInput = (newSubtaskData) => {
+    
+        const updatedSubtaskData = task.subtasks.map((sub) => {
+            sub.id === newSubtaskData.id ? newSubtaskData : sub
+        });
+        setTask({...prev, subtasks: updatedSubtaskData})
+
+   };
+
+
+
     const subtasksLength = task?.subtasks?.length || 0;  
-    if(loading) return <div>Loading...</div>
+    loading ? <Loader loading={loading}/> : null;
     if (!task) return <div>Task not found</div>;
 
   return (
@@ -69,8 +88,9 @@ const FullTaskCard = ({taskId}) => {
                 <section className="all-subtasks-container py-6 flex flex-col gap-4 justify-evenly">
                    {subtasksLength > 0 ? (task.subtasks.map((subtask, index) =>(
                         <div className='mx-auto' key={subtask.id || `${subtask.title}-${index}`}>
-                            <Subtask taskId={task.id} subtask={subtask}/>
+                            <EditSubtask taskId={task.id} subtask={subtask} onSubtaskUpdate={handleSubtaskNewInput}/>
                         </div>
+                        
                     ))) : (<p>No subtasks yet</p>)}
                 </section>
                 <button onClick={handleButtonClick} className='px-6 py-3 text-center rounded-lg border-dotted border-2 border-black flex items-center justify-center  bg-gray-300'>

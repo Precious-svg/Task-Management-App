@@ -149,10 +149,32 @@ const TaskProvider = ({children}) => {
        };
     }
 
+    const updateSubtask = async (taskId, subtaskId, updatedSubtaskData) => {
+        const taskRef = doc(db, "tasks", id);
+        const taskSnap = await getDoc(taskRef);
+        if(taskSnap.exists()){
+            const taskData = taskSnap.data();
+            const taskSubtasks = taskData.subtasks || []
+            const updateSubtaskData = taskSubtasks.map((subtask) => {
+                if(subtask.id !== subtaskId){
+                    return subtask
+                };
+                return {
+                    ...subtask, ...updatedSubtaskData
+                };
+            });
+
+            await updateDoc(taskRef, {
+                subtasks: updateSubtaskData
+            });
+        } else{
+            console.log("Task not found");
+        };
+    }
     
 
   return (
-    <TaskContext.Provider value={{tasks, addTask, removeTask, updateTask, updateDoc, toggleSubtaskStatus, getTaskStatus, addNewSubtasks, deleteSubtask}}>
+    <TaskContext.Provider value={{tasks, addTask, removeTask, updateTask, updateDoc, toggleSubtaskStatus, getTaskStatus, addNewSubtasks, deleteSubtask, updateSubtask}}>
         {children}
    </TaskContext.Provider>
   )

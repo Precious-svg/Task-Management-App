@@ -39,7 +39,7 @@ const AddSubtaskForm = ({taskId}) => {
         } else {alert("please fill in the title and descriptrion")}
     }
   return (
-    <div >
+    <div>
         <form className='flex flex-col items-start justify-center mx-auto'>
             <label htmlFor="title" className='py-4'>Title</label>
             <input type="text" id="title" name="title" value={title} onChange={handleChange} placeholder='Web optimization' required
