@@ -1,7 +1,6 @@
 import React from 'react';
 import { doc, getDoc } from "firebase/firestore";
 import { db } from '../services/firebase';
-import Subtask from "./Subtask"
 import AddSubtaskForm from './AddSubtaskForm';
 import { useEffect, useState } from 'react';
 import { FaBell } from 'react-icons/fa6';
@@ -11,18 +10,29 @@ import NavBar from './NavBar';
 import { useNavigate } from 'react-router-dom';
 import EditSubtask from './EditSubtask';
 import Loader from './Loader';
+import { useTasks } from '../Context/TaskContext';
+import ScrollUPButton from './ScrollUPButton';
 
 // full description  and details of the task created
 const FullTaskCard = ({taskId}) => {
     const [task, setTask] = useState(null);
     const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
+    const navigate = useNavigate(); 
+    const { removeTask } = useTasks();
 
-    const navigate = useNavigate();
 
+    // handles showing new subtask created
+
+    const handleSubtaskCreated = (createdSubtaskData) => {
+        setTask((prev) => ({
+            ...prev, subtasks: [...prev.subtasks, createdSubtaskData]
+        }))
+        setShowForm(false)
+    }
     const pageOptions = [
         {label: "edit", onClick: () => navigate(`/edit-task/${task.id}`)},
-        {label: "delete", onClick: () => alert("delete")}
+        {label: "delete", onClick: () => handleDelete()}
     ]
     
     const handleButtonClick = () => {
@@ -34,8 +44,11 @@ const FullTaskCard = ({taskId}) => {
             const taskRef = doc(db, "tasks", taskId);
             const taskSnap = await getDoc(taskRef);
             if(taskSnap.exists()){
-                setTask({id: taskSnap.id, ...taskSnap.data()})
-            } else(console.log("Task not found"))
+                setTask({id: taskSnap.id, subtasks: [], ...taskSnap.data()})
+            } else{
+                console.log("Task not found") 
+                setTask(null);
+            }
            } catch(error){
             console.error("Error fetching task:", error)
            } finally{
@@ -43,33 +56,44 @@ const FullTaskCard = ({taskId}) => {
            }
         };
         fetchTask();
-   },     [taskId])
+    },  [taskId])
 
+    // to delete the current task
+    const handleDelete = async() => {
 
+        console.log("Task to be deleted:", task)
+        await removeTask(taskId);
+        navigate("/seeAllTasks");
+    }
+
+    // to edit subtask without redirecting
    const handleSubtaskNewInput = (newSubtaskData) => {
     
         const updatedSubtaskData = task.subtasks.map((sub) => {
-            sub.id === newSubtaskData.id ? newSubtaskData : sub
+           return sub.id === newSubtaskData.id ? newSubtaskData : sub
         });
-        setTask({...prev, subtasks: updatedSubtaskData})
+       setTask((prev) => ({...prev, subtasks: updatedSubtaskData}))
 
    };
 
 
 
     const subtasksLength = task?.subtasks?.length || 0;  
-    loading ? <Loader loading={loading}/> : null;
-    if (!task) return <div>Task not found</div>;
+    if(loading) return <Loader loading={loading}/>;
+    if (!task) {
+        console.warn("Task not loaded yet");
+        return <div>Task not found</div>;
+    }
 
   return (
-    <div className='bg-gray-100 w-full min-h-screen flex flex-col px-7'>
+    <div className='bg-gray-100 w-full min-h-screen flex flex-col px-7 relative '>
         
-          <header className="flex w-full justify-between items-center fixed top-0 left-0  h-15 right-0 px-4 py-4">
+          <header id="top-part" className="flex w-full justify-between items-center fixed top-0 left-0  h-15 right-0 px-4 py-4">
               <NavBar pageOptions={pageOptions}/>
               <button className='text-xl'><FaBell/></button>
           </header>
 
-           <main className='pt-15'>
+           <main className='pt-15 pb-20'>
                 <h2 className='font-bold text-2xl py-2'>{task.title}</h2>
                 <section>
                     <h3 className='font-semibold text-xl my-2'>Details:</h3>
@@ -85,7 +109,7 @@ const FullTaskCard = ({taskId}) => {
                        </div> 
                     </div>
                 </section>
-                <section className="all-subtasks-container py-6 flex flex-col gap-4 justify-evenly">
+                <section className="all-subtasks-container py-6 flex flex-col gap-4 justify-evenly ">
                    {subtasksLength > 0 ? (task.subtasks.map((subtask, index) =>(
                         <div className='mx-auto' key={subtask.id || `${subtask.title}-${index}`}>
                             <EditSubtask taskId={task.id} subtask={subtask} onSubtaskUpdate={handleSubtaskNewInput}/>
@@ -98,7 +122,8 @@ const FullTaskCard = ({taskId}) => {
                         <FaPlus size={20}/>
                     </span>
                 </button>
-                {showForm &&  <AddSubtaskForm  taskId={task.id}/>}
+                {showForm &&  <AddSubtaskForm  taskId={task.id} onSubtaskCreated={handleSubtaskCreated}/>}
+                <ScrollUPButton />
          </main>
     
  </div>

@@ -6,7 +6,7 @@ import { FaEllipsisV } from 'react-icons/fa';
 import { FaRegWindowClose } from 'react-icons/fa';
 
 
-const NavBar = ({pageOptions}) => {
+const NavBar = ({pageOptions = []}) => {
     const [isOpen, setIsOpen] = useState(false);
     const navigate = useNavigate();
     const toggleNavBar = () => {

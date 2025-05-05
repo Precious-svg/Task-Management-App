@@ -12,7 +12,7 @@ const HomeApp = () => {
    const [seeAllTasks, setSeeAllTasks] = useState(false);
    
   return (
-    <body className='w-full'>
+    <section className='w-full'>
        <div className="flex relative flex-col gap-2 min-h-screen bg-gray-100 mx-auto w-full">
           <HeaderNavBar/>
           <main className="pb-5  pt-15 mt-4 md:w-[75%] md:h-[70%] flex-grow">
@@ -49,7 +49,7 @@ const HomeApp = () => {
               </section>
           </main>
        </div>
-    </body>
+    </section>
   )
 }
 

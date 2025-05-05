@@ -133,7 +133,7 @@ const TaskProvider = ({children}) => {
         } 
     };
 
-    const deleteSubtask = async(subtaskId, taskId) => {
+    const deleteSubtask = async(taskId, subtaskId) => {
         const taskRef = doc(db, "tasks", taskId);
        const  taskSnap = await getDoc(taskRef);
        if(taskSnap.exists()){
@@ -150,26 +150,22 @@ const TaskProvider = ({children}) => {
     }
 
     const updateSubtask = async (taskId, subtaskId, updatedSubtaskData) => {
-        const taskRef = doc(db, "tasks", id);
+        const taskRef = doc(db, "tasks", taskId);
         const taskSnap = await getDoc(taskRef);
-        if(taskSnap.exists()){
-            const taskData = taskSnap.data();
-            const taskSubtasks = taskData.subtasks || []
-            const updateSubtaskData = taskSubtasks.map((subtask) => {
-                if(subtask.id !== subtaskId){
-                    return subtask
-                };
-                return {
-                    ...subtask, ...updatedSubtaskData
-                };
-            });
+        if(!taskSnap.exists()) throw new Error("task not found");
+        const taskData = taskSnap.data();
+        const taskSubtasks = taskData.subtasks;
+        if(!taskSubtasks || !Array.isArray(taskSubtasks)){
+            throw new Error("No subtasks found")
+        }
+        const updateSubtasks = taskSubtasks.map((subtask) => {
+         return  subtask.id === subtaskId ? {...subtask, ...updatedSubtaskData} : subtask
+        });
 
-            await updateDoc(taskRef, {
-                subtasks: updateSubtaskData
-            });
-        } else{
-            console.log("Task not found");
-        };
+       await updateDoc(taskRef, {
+           subtasks: updateSubtasks
+       });
+        
     }
     
 

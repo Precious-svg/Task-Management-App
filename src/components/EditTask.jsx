@@ -6,6 +6,12 @@ import { doc, getDoc} from "firebase/firestore";
 import { db } from '../services/firebase';
 import { useNavigate } from 'react-router-dom';
 import Loader from './Loader';
+import { FaArrowLeft } from 'react-icons/fa6';
+import { Navigate } from 'react-router-dom';
+
+// to go back a page
+
+
 
 const EditTask = () => {
     const {updateTask, updateSubtask} = useTasks();
@@ -24,7 +30,7 @@ const EditTask = () => {
         }
     );
 
-
+   
 
     // to update task data, function.
 
@@ -82,11 +88,18 @@ const EditTask = () => {
         navigate(`/task/${id}`)
     }
 
+    const handleBackClick = () => {
+        console.log("Navigating back...")
+        navigate(-1);
+    }
   return (
     <div className='bg-gray-100 w-full min-h-screen'>
+        <nav className="w-full pl-7 pt-2">
+            <button onClick={handleBackClick} className="text-xl"><FaArrowLeft/></button>
+        </nav>
         {loading ? <Loader loading={loading}/> : null}
         {!loading && taskData ?(
-        <form className='flex flex-col gap-2 w-full p-7'>
+        <form onSubmit={handleSubmit} className='flex flex-col gap-2 w-full px-7 pt-2 pb-2'>
             
             <label htmlFor="title" className='py-2'>Title</label>
             <input type="text" id="title" name="title" value={taskData.title} onChange={handleChange} placeholder='Web optimization' required
@@ -122,7 +135,7 @@ const EditTask = () => {
                 })) : (<p>No subtasks created</p>)
             }
             
-            <button onSubmit={handleSubmit}type="submit" className='place-self-center w-full py-4 rounded-lg bg-indigo-600'>Save</button>
+            <button type="submit" className='place-self-center w-full py-4 rounded-lg bg-indigo-600'>Save</button>
         </form>) : <div>Loading tasks data </div>} 
     </div>
   )

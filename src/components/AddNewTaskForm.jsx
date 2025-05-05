@@ -39,20 +39,17 @@ const AddNewTaskForm = () => {
 
             console.log("Submitting task:", newTask);
             try{
-                const taskId = await addTask(newTask);
-                console.log("Returned task ID:", taskId);
-               if(taskId){
-                navigate(`/task/${taskId}`);
-               };
+                const newTaskId = await addTask(newTask);
+                console.log("Returned task ID:", newTaskId);
+                navigate(`/task/${newTaskId}`);
             }catch(error){
                 console.error("Unable to go to task page:", error);
             }
         } else{alert("Please fill in the title and description")}
     }
   return (
-    <div className='bg-gray-100 w-full min-h-screen'>
-        <form className='flex flex-col gap-2 w-full p-7'>
-            
+    <div className='bg-gray-100 w-full min-h-screen overflow-y-auto'>
+        <form onSubmit={handleSubmit} className='flex flex-col gap-2 w-full p-7'>
             <label htmlFor="title" className='py-2'>Title</label>
             <input type="text" id="title" name="title" value={title} onChange={handleChange} placeholder='Web optimization' required
              className='w-full bg-gray-200 py-5 px-2 rounded-lg'
@@ -71,7 +68,7 @@ const AddNewTaskForm = () => {
             </select>
             <label htmlFor="due_date"  className='pb-2 pt-4'>Deadline</label>
             <input id="due_date" name="due_date"  className='py-2 mb-5 bg-gray-200 rounded-lg' onChange={handleChange} type="datetime-local"/>
-            <button onSubmit={handleSubmit}type="submit" className='place-self-center w-full py-4 rounded-lg bg-indigo-600'>Create Task</button>
+            <button type="submit" className='place-self-center w-full py-4 rounded-lg bg-indigo-600'>Create Task</button>
         </form>
     </div>
   )

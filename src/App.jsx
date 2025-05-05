@@ -25,12 +25,12 @@ const App = () => {
         <Route path="/create-account" element={<CreateAccountPage/>}/>
         <Route path="/logIn" element={<LogInPage/>}/>
         <Route path="/forgotPassword" element={<ForgotPassWordPage/>}/>
+        <Route path="edit-task/:id" element={ currentUser ? <EditTaskPage/> : <Navigate to="/logIn"/>}/>
         <Route path="/" element={<MainLayout/>}>
             <Route index element={<ProtectedRoute><HomePage/></ProtectedRoute>}/>
             <Route path="/seeAllTasks" element={<ProtectedRoute><AllTaskListPage/></ProtectedRoute>}/>
             <Route path="/task/:id" element={<ProtectedRoute><TaskDetailsPage/></ProtectedRoute>}/>
-            <Route path="newTaskForm" element={currentUser ? <AddNewTaskPage/> : <Navigate to="/logIn"/>}/>
-            <Route path="edit-task/:id" element={ currentUser ? <EditTaskPage/> : <Navigate to="/logIn"/>}/>
+            <Route path="newTaskForm" element={currentUser ? <AddNewTaskPage/> : <Navigate to="/logIn"/>}/>   
          </Route>
          <Route path="*" element={<NotFoundPage/>}/>
     </Route>)

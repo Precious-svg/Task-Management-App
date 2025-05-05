@@ -2,8 +2,7 @@ import React from 'react';
 import { useTasks } from '../Context/TaskContext';
 import { useState } from 'react'; 
 import { useNavigate, useParams } from "react-router-dom";
-const AddSubtaskForm = ({taskId}) => {
-    const { id } = useParams();
+const AddSubtaskForm = ({taskId, onSubtaskCreated}) => {
     const {addNewSubtasks} = useTasks();
     const [title, setTitle] = useState("");
     const [details, setDetails] = useState("");
@@ -28,10 +27,11 @@ const AddSubtaskForm = ({taskId}) => {
             }
             console.log("Submitting task:", newSubtask);
             try{
-                await addNewSubtasks(newSubtask, id);
-                if(id){
-                    navigate(`/task/${id}`);
-                };
+                await addNewSubtasks(newSubtask, taskId);
+                if(onSubtaskCreated){
+                    onSubtaskCreated(addNewSubtasks);
+                }
+            
             } catch(error){
                 console.error("Unable to go to task page:", error);
             }
@@ -40,14 +40,14 @@ const AddSubtaskForm = ({taskId}) => {
     }
   return (
     <div>
-        <form className='flex flex-col items-start justify-center mx-auto'>
+        <form onSubmit={handleSubmit} className='flex flex-col items-start justify-center mx-auto overflow-y-auto relative'>
             <label htmlFor="title" className='py-4'>Title</label>
             <input type="text" id="title" name="title" value={title} onChange={handleChange} placeholder='Web optimization' required
              className="bg-white p-2" />
             <label htmlFor="details" className='py-4'>Description</label>
             <textarea id="details" name="details" value={details} onChange={handleChange} placeholder='Write something...'
              className='bg-white py-3  px-2 rounded-md'></textarea>
-            <button onSubmit={handleSubmit} className='bg-indigo-600 p-2 rounded-md my-2'>Create Subtask</button>
+            <button type="submit" className='bg-indigo-600 p-2 rounded-md my-2'>Create Subtask</button>
         </form>    
     </div>
   )
