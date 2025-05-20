@@ -118,19 +118,23 @@ const TaskProvider = ({children}) => {
         const taskSnap = await getDoc(taskRef);
         if (taskSnap.exists()){
             const taskData = taskSnap.data();
+            const subtaskdWithId = {
+                ...newSubtask,
+                id: uuidv4(),
+                status: "pending"
+            }
             const updatedSubtasks = [
                 ...(taskData.subtasks || []),
-                {
-                    ...newSubtask,
-                    id: uuidv4(),
-                    status: "pending"
-                }
+                subtaskdWithId
             ];
             await updateDoc(taskRef, {
                 subtasks: updatedSubtasks
             });
 
-        } 
+            return subtaskdWithId;
+        } else {
+            throw new Error("Task not found")
+        }
     };
 
     const deleteSubtask = async(taskId, subtaskId) => {

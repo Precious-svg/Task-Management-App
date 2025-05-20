@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 const SideBar = ({item}) => {
     const { logOut } = useAuth();
+    const navigate = useNavigate();
     const handleClick = async () => {
         if(item.name.toLowerCase() === "log out"){
             await logOut();

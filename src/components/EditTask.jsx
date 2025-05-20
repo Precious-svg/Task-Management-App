@@ -24,7 +24,6 @@ const EditTask = () => {
             details: "",
             due_date : "",
             status: "", 
-            due_date: "",
             category: "",
             subtasks: []
         }

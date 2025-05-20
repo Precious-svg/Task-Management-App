@@ -105,7 +105,7 @@ const FullTaskCard = ({taskId}) => {
                       </div>
                         
                         <div>
-                            <div></div>
+                            <div>{task.category}</div>
                        </div> 
                     </div>
                 </section>

@@ -1,14 +1,13 @@
 import React from 'react';
 import { useTasks } from '../Context/TaskContext';
-import Subtask from './Subtask';
 import {useState, useEffect} from "react";
 import {doc, getDoc} from "firebase/firestore";
 import { db } from '../services/firebase';
-import Subtask from './Subtask';
-const DeleteSubtask = ({taskId, subtaskId, subtasks, subtask}) => {
+import { FaRegTrashCan } from 'react-icons/fa6';
+
+const DeleteSubtask = ({taskId, subtaskId, subtask, onSubtaskDelete}) => {
     const {deleteSubtask} = useTasks();
     const [deletedSubtask, setDeletedSubtask] = useState(null);
-    const [undeletedSubtasks, setUndeletedSubtasks] = useState([...subtasks])
     const [task, setTask] = useState(); 
     const [showButtons, setShowButtons] = useState();
     const [isDeleting, setIsDeleting] = useState(false)
@@ -34,43 +33,39 @@ const DeleteSubtask = ({taskId, subtaskId, subtasks, subtask}) => {
 
     const handleDeleteButton = () => {
         setIsDeleting(true);
-        isDeleting &&  setShowButtons(true);
+        setShowButtons(true);
+        setDeletedSubtask(subtask)
        
     }
     const handleContinueToDelete = async() => {
-        const subtasksData = task.subtasks
-        if(taskId === task.id){
-            const remainingSubtasks = subtasksData.filter((sub) => sub.id !== subtaskId);
-            const actualSubtask = subtasksData.find((sub) => sub.id === subtaskId );
-            setTask((prev) => ({...prev, subtasks: remainingSubtasks}))
-            setDeletedSubtask([...actualSubtask]);
-            setUndeletedSubtasks([...remainingSubtasks])
+        if(!task || !task.subtasks) return;
+        const subtasksData = task.subtasks;
+        const remainingSubtasks = subtasksData.filter((sub) => sub.id !== subtaskId);
+
+        try {
+            await deleteSubtask(taskId, subtaskId);
+            if(onSubtaskDelete) onSubtaskDelete(remainingSubtasks);
+            setTask((prev) => ({ ...prev, subtasks: remainingSubtasks }));
             setIsDeleting(false);
             setShowButtons(false)
-            try{
-                await deleteSubtask(taskId, subtaskId);
-                onSubtaskDelete(remainingSubtasks);
-            } catch(error){
-                console.error("Error deleting task:", error)
-            }
-        } else{
-            console.log("Unable to delete task, try again");
+        } catch(error){
+            console.error("Error deleting task:", error)
         }
+        
     }
 
 
     const handleCancel = () =>{
         setIsDeleting(false);
         setDeletedSubtask(null);
-        setUndeletedSubtasks(subtasks);
         setShowButtons(false);
         
     }
   return (
-    <div>&
-        {isDeleting ?
+    <>
+        <button onClick={handleDeleteButton}><FaRegTrashCan size={15}/></button>
+        {isDeleting &&
           ( <div>
-               <Subtask subtask={deletedSubtask} taskId={taskId} setIsEditing={() => setIsEditing(false)}/>
                {showButtons && 
                   <div>
                       <button onClick={handleCancel}>Cancel</button>
@@ -78,10 +73,10 @@ const DeleteSubtask = ({taskId, subtaskId, subtasks, subtask}) => {
                   </div>
                }
                
-           </div>) : (<Subtask/>)
+           </div>)
         }
        
-    </div>
+    </>
   )
 }
 

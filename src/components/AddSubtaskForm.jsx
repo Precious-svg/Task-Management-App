@@ -6,6 +6,7 @@ const AddSubtaskForm = ({taskId, onSubtaskCreated}) => {
     const {addNewSubtasks} = useTasks();
     const [title, setTitle] = useState("");
     const [details, setDetails] = useState("");
+    const { id } = useParams();
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -31,7 +32,7 @@ const AddSubtaskForm = ({taskId, onSubtaskCreated}) => {
                 if(onSubtaskCreated){
                     onSubtaskCreated(addNewSubtasks);
                 }
-            
+                navigate(`/task/${id}`)
             } catch(error){
                 console.error("Unable to go to task page:", error);
             }

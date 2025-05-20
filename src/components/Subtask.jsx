@@ -1,10 +1,18 @@
 import React from 'react';
 import {useTasks} from "../Context/TaskContext";
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { FaRegTrashCan } from 'react-icons/fa6';
-const Subtask = ({taskId, subtask, setIsEditing}) => {
+
+const Subtask = ({taskId, subtask, setIsEditing,}) => {
     const {toggleSubtaskStatus} = useTasks();
     const [isChecked, setIsChecked] = useState(subtask.status === "completed")
+
+    //delete functions
+    const {deleteSubtask} = useTasks();
+    const [deletedSubtask, setDeletedSubtask] = useState(null);
+    const [task, setTask] = useState(); 
+    const [showButtons, setShowButtons] = useState();
+    const [isDeleting, setIsDeleting] = useState(false)
    
 
     const handleCheckBoxChange = async (e) => {
@@ -20,6 +28,57 @@ const Subtask = ({taskId, subtask, setIsEditing}) => {
        
     }
 
+    // for delet subtask button
+    useEffect(() => {
+      const  fetchTask = async() => {
+          try{
+              const docRef = doc(db, "tasks", taskId);
+              const docSnap = await getDoc(docRef);
+              if(docSnap.exists()){
+                  setTask({id: docSnap.id, ...docSnap.data()})
+              } else{
+                  console.log("Error, task not found")
+              }
+          } catch(error){
+              console.error("Error fetching task:", error)
+          } finally{
+              setLoading(false)
+          }
+      }
+      fetchTask();
+  }, [taskId])
+
+  const handleDeleteButton = () => {
+    setIsDeleting(true);
+    setShowButtons(true);
+    setDeletedSubtask(subtask)
+   
+  }
+ const handleContinueToDelete = async() => {
+     if(!task || !task.subtasks) return;
+     const subtasksData = task.subtasks;
+     const remainingSubtasks = subtasksData.filter((sub) => sub.id !== subtaskId);
+
+     try {
+         await deleteSubtask(taskId, subtaskId);
+         if(onSubtaskDelete) onSubtaskDelete(remainingSubtasks);
+         setTask((prev) => ({ ...prev, subtasks: remainingSubtasks }));
+         setIsDeleting(false);
+         setShowButtons(false)
+      } catch(error){
+        console.error("Error deleting task:", error)
+      }
+    
+  }
+
+  const handleCancel = () =>{
+    setIsDeleting(false);
+    setDeletedSubtask(null);
+    setShowButtons(false);
+    
+  }
+    
+
   return (
     <div className="flex flex-col border-2 border-black gap-2 justify-around py-3 px-4 rounded-md">
          <div className='flex gap-2 justify-between'>
@@ -33,7 +92,19 @@ const Subtask = ({taskId, subtask, setIsEditing}) => {
 
          <div className='flex justify-between items-center'>
            <button onClick={() => setIsEditing(true)}>Edit</button>
-           <button><FaRegTrashCan size={15}/></button>
+           <button onClick={handleDeleteButton}><FaRegTrashCan size={15}/></button>
+
+           {isDeleting &&
+          ( <div>
+               {showButtons && 
+                  <div>
+                      <button onClick={handleCancel}>Cancel</button>
+                      <button onClick={handleContinueToDelete}>Continue</button>
+                  </div>
+               }
+               
+           </div>)
+        }
          </div>
          {/* <textarea id="comments" name="comments"  value="add a comment..."></textarea> */}
     </div>
