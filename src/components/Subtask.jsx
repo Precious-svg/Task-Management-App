@@ -2,11 +2,15 @@ import React from 'react';
 import {useTasks} from "../Context/TaskContext";
 import { useState, useEffect } from "react"
 import { FaRegTrashCan } from 'react-icons/fa6';
+import { doc, getDoc} from "firebase/firestore";
+import { db } from '../services/firebase';
 
 const Subtask = ({taskId, subtask, setIsEditing,}) => {
     const {toggleSubtaskStatus} = useTasks();
     const [isChecked, setIsChecked] = useState(subtask.status === "completed")
-
+    const [loading, setLoading] = useState(true)
+    const subtaskId = subtask.id;
+   
     //delete functions
     const {deleteSubtask} = useTasks();
     const [deletedSubtask, setDeletedSubtask] = useState(null);

@@ -3,6 +3,7 @@ import { useTasks } from '../Context/TaskContext';
 import {useState, useEffect} from "react";
 import {doc, getDoc} from "firebase/firestore";
 import { db } from '../services/firebase';
+
 import { FaRegTrashCan } from 'react-icons/fa6';
 
 const DeleteSubtask = ({taskId, subtaskId, subtask, onSubtaskDelete}) => {
