@@ -3,8 +3,9 @@ import { NavLink } from 'react-router-dom';
 import {useAuth} from "../Context/AuthContext";
 import {useState} from "react";
 import { useNavigate } from 'react-router-dom';
+
 const CreateAccount = () => {
-    const {signUp, error} = useAuth();
+    const {signUp, googleSignIn, error} = useAuth();
     const navigate = useNavigate();
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
@@ -40,12 +41,20 @@ const CreateAccount = () => {
         if(!error){
             navigate("/")
 
-        };
+        };    
         
-            
-                
-            
-        
+    }
+
+
+    // sign in with google
+
+    const handleGoogleSignIn = async (e) => {
+        try {
+            await googleSignIn();
+            alert("Signed in successfully")
+        }catch(error){
+            alert("Failed to sign in")
+        }
     }
   return (
     <div id="createAccount" className='bg-slate-50 w-[100%] h-full rounded-lg'>
@@ -82,7 +91,7 @@ const CreateAccount = () => {
                 <span  className='border-t-[2px] w-[33%] border-t-gray-200'></span>
             </div>
             <ul className='flex justify-around items-center pb-3'>
-                <li><img src="" alt="gmail icon"/></li>
+                <li><button onClick={handleGoogleSignIn}><img src="" alt="gmail icon"/></button></li>
                 <li><img src="" alt="apple icon"/></li>
             </ul>
             <p className='text-center pb-3'>Already have an account? <NavLink to="/logIn">Sign in.</NavLink></p>

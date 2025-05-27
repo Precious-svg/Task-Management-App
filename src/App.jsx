@@ -17,8 +17,28 @@ import EditTaskPage from './pages/EditTaskPage';
 import PendingTasks from './pages/pendingTasks';
 import CompletedTasksPage from './pages/CompletedTasksPage';
 import OngoingTasksPage from './pages/OngoingTasksPage';
+import { useEffect } from 'react';
+import CalendarPage from './pages/CalendarPage';
 
 const App = () => {
+
+  useEffect(() => {
+    const url = new URL(window.location);
+    const paramsToRemove = ["key", "code", "state", "scope", "authuser"]; // common OAuth params
+
+    let changed = false;
+    paramsToRemove.forEach(param => {
+      if (url.searchParams.has(param)) {
+        url.searchParams.delete(param);
+        changed = true;
+      }
+    });
+
+    if (changed) {
+      window.history.replaceState({}, document.title, url.toString());
+    }
+  }, []);
+
   const { currentUser} = useAuth();
 
   const router = createBrowserRouter(
@@ -33,10 +53,11 @@ const App = () => {
             <Route index element={<ProtectedRoute><HomePage/></ProtectedRoute>}/>
             <Route path="/seeAllTasks" element={<ProtectedRoute><AllTaskListPage/></ProtectedRoute>}/>
             <Route path="/task/:id" element={<ProtectedRoute><TaskDetailsPage/></ProtectedRoute>}/>
-            <Route path="newTaskForm" element={currentUser ? <AddNewTaskPage/> : <Navigate to="/logIn"/>}/>   
-            <Route path="pending-tasks" element={<ProtectedRoute><PendingTasks/></ProtectedRoute>}/>
-            <Route path="completed-tasks" element={<ProtectedRoute><CompletedTasksPage/></ProtectedRoute>}/>
-            <Route path="ongoing-tasks" element={<ProtectedRoute><OngoingTasksPage/></ProtectedRoute>}/>
+            <Route path="/newTaskForm" element={currentUser ? <AddNewTaskPage/> : <Navigate to="/logIn"/>}/>   
+            <Route path="/pending-tasks" element={<ProtectedRoute><PendingTasks/></ProtectedRoute>}/>
+            <Route path="/completed-tasks" element={<ProtectedRoute><CompletedTasksPage/></ProtectedRoute>}/>
+            <Route path="/ongoing-tasks" element={<ProtectedRoute><OngoingTasksPage/></ProtectedRoute>}/>
+            <Route path="/calendar" element={<ProtectedRoute><CalendarPage/></ProtectedRoute>}/>
          </Route>
          <Route path="*" element={<NotFoundPage/>}/>
     </Route>)

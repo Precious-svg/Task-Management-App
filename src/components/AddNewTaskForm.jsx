@@ -2,6 +2,7 @@ import React from 'react';
 import { useTasks } from '../Context/TaskContext';
 import { useState } from 'react';
 import { useNavigate } from "react-router-dom"
+import NavBar from '../components/NavBar';
 
 const AddNewTaskForm = () => {
     const { addTask } = useTasks();
@@ -49,6 +50,7 @@ const AddNewTaskForm = () => {
     }
   return (
     <div className='bg-gray-100 w-full min-h-screen overflow-y-auto'>
+        <NavBar/>
         <form onSubmit={handleSubmit} className='flex flex-col gap-2 w-full p-7'>
             <label htmlFor="title" className='py-2'>Title</label>
             <input type="text" id="title" name="title" value={title} onChange={handleChange} placeholder='Web optimization' required

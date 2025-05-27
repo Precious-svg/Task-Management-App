@@ -6,7 +6,7 @@ import { NavLink } from 'react-router-dom';
 
 const LogIn = () => {
 
-    const { logIn, error } = useAuth();
+    const { logIn, error, googleSignIn } = useAuth();
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("")
@@ -26,7 +26,19 @@ const LogIn = () => {
         }
         
     };
-
+    let signingIn = false;
+    const handleGoogleSignIn = async (e) => {
+        if (signingIn) return; // Prevent multiple popups
+         signingIn = true;
+        try {
+           const user = await googleSignIn();
+           alert("Signed in successfully: " + user.displayName);
+        }catch(error){
+            alert("Failed to sign in:" + error.message)
+        }finally {
+            signingIn = false;
+          }
+    }
   return (
     <section className='bg-slate-50 w-[100%] h-full rounded-lg flex items-center justify-center'>
        
@@ -61,7 +73,7 @@ const LogIn = () => {
                 <span  className='border-t-[2px] w-[33%] border-t-gray-200'></span>
             </div>
             <ul className='flex justify-around items-center pb-2'>
-                <li><img src="" alt="gmail icon"/></li>
+                <li><button onClick={handleGoogleSignIn}><img src="" alt="gmail icon"/></button></li>
                 <li><img src="" alt="apple icon"/></li>
             </ul>
         </footer>

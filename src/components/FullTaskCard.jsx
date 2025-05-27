@@ -12,6 +12,10 @@ import EditSubtask from './EditSubtask';
 import Loader from './Loader';
 import { useTasks } from '../Context/TaskContext';
 import ScrollUPButton from './ScrollUPButton';
+import { initGoogleClient, signInWithGoogle, createCalendarEvent } from "../googleCalendar";
+
+
+
 
 // full description  and details of the task created
 const FullTaskCard = ({taskId}) => {
@@ -85,12 +89,26 @@ const FullTaskCard = ({taskId}) => {
         return <div>Task not found</div>;
     }
 
+
+    // handle add to calendar
+
+    const handleAddToCalendar = async () => {
+        try {
+          await signInWithGoogle();
+          await createCalendarEvent(task);
+          alert('Event added to Google Calendar!');
+        } catch (error) {
+          console.error('Error:', error);
+          alert('Failed to add event');
+        }
+    };
+
   return (
     <div className='bg-gray-100 w-full min-h-screen flex flex-col px-7 relative '>
         
           <header id="top-part" className="flex w-full justify-between items-center fixed top-0 left-0  h-15 right-0 px-4 py-4">
               <NavBar pageOptions={pageOptions}/>
-              <button className='text-xl'><FaBell/></button>
+              <button onClick={handleAddToCalendar} className='text-xl'><FaBell/></button>
           </header>
 
            <main className='pt-15 pb-20'>

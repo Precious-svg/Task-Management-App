@@ -1,5 +1,5 @@
 import React from 'react'
-import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, onAuthStateChanged} from "firebase/auth"
+import {getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, sendPasswordResetEmail, onAuthStateChanged, GoogleAuthProvider, signInWithPopup} from "firebase/auth"
 import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { app } from "./firebase";
 
@@ -48,6 +48,29 @@ export const signOutUser = async () => {
     await signOut(auth);
 }
 
+
+// sign in with google
+
+export const signInWithGoogle = async () => {
+    const auth = getAuth();
+    const provider = new GoogleAuthProvider();
+  
+    try {
+      const result = await signInWithPopup(auth, provider);
+      // Optional: access user info
+
+      if (!result || !result.user) {
+        console.warn('Google sign-in returned no user');
+        return null;
+      } 
+      const user = result.user;
+      console.log('User signed in:', user.displayName);
+      return user;
+    } catch (error) {
+      console.error('Google sign-in error:', error);
+      throw error;
+    }
+};
 // check auth state
 
 export const onAuthStateChangedListener = (callback) => {

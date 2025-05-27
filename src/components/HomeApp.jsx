@@ -5,13 +5,14 @@ import { FaCheck } from 'react-icons/fa';
 import { FaFileAlt } from 'react-icons/fa';
 import { FaPen } from 'react-icons/fa6';
 import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate} from 'react-router-dom';
 import { useTasks } from '../Context/TaskContext';
 
 
 const HomeApp = () => {
    const {tasks } = useTasks()
    const [seeAllTasks, setSeeAllTasks] = useState(false);
+   const navigate = useNavigate()
    
   return (
     <section className='w-full'>

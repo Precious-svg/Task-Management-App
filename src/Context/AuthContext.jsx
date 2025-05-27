@@ -1,5 +1,5 @@
 import React from 'react'
-import { signUpWithEmail, signInWithEmail, signOutUser, resetPassword, onAuthStateChangedListener } from "../services/firebaseAuth"
+import { signUpWithEmail, signInWithEmail, signOutUser, resetPassword, onAuthStateChangedListener, signInWithGoogle } from "../services/firebaseAuth"
 import { createContext, useState, useEffect, useContext} from "react"
 
 const AuthContext = createContext()
@@ -39,6 +39,7 @@ const AuthProvider = ({children}) => {
             };
         }
     }
+
     const signUp = async (email, password, name) => {
         try {
             await signUpWithEmail(email, password, name);
@@ -67,8 +68,20 @@ const AuthProvider = ({children}) => {
              setError("Error logging out, please try again")
         }
     }
+
+    const googleSignIn = async () => {
+        try {
+            const user = await signInWithGoogle();
+            setError(null);
+            return user;
+        }catch(error){
+            console.error("Error signing in with google:", error);
+            setError("Error signing in with google, please try again");
+            alert("Error signing in with google: " + error.message);
+        }
+    }
   return (
-     <AuthContext.Provider value={{ currentUser, logIn, signUp, logOut, forgotPassword, error}}>
+     <AuthContext.Provider value={{ currentUser, logIn, signUp, logOut, forgotPassword, googleSignIn, error}}>
         {!loading && children}
      </AuthContext.Provider>
   )

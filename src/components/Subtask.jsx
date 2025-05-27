@@ -96,7 +96,7 @@ const Subtask = ({taskId, subtask, setIsEditing,}) => {
 
          <div className='flex justify-between items-center'>
            <button onClick={() => setIsEditing(true)}>Edit</button>
-           <button onClick={handleDeleteButton}><FaRegTrashCan size={15}/></button>
+           <button onClick={handleDeleteButton}>{!showButtons && <FaRegTrashCan size={15}/>}</button>
 
            {isDeleting &&
           ( <div>
