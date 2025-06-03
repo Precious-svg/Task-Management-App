@@ -12,7 +12,9 @@ import { useTasks } from '../Context/TaskContext';
 const HomeApp = () => {
    const {tasks } = useTasks()
    const [seeAllTasks, setSeeAllTasks] = useState(false);
-   const navigate = useNavigate()
+  
+
+
    
   return (
     <section className='w-full'>
