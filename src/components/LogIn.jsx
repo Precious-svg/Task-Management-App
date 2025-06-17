@@ -3,6 +3,7 @@ import {useAuth} from "../Context/AuthContext"
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import { SiGmail, SiApple } from "react-icons/si";
 
 const LogIn = () => {
 
@@ -40,7 +41,7 @@ const LogIn = () => {
           }
     }
   return (
-    <section className='bg-slate-50 w-[100%] h-full rounded-lg flex items-center justify-center'>
+    <section className='bg-slate-50 w-[100%] h-full rounded-lg flex items-center justify-center md:w-[70%]'>
        
         <div id="logIn" className="w-full px-7 pb-7">
            <div>
@@ -73,8 +74,8 @@ const LogIn = () => {
                 <span  className='border-t-[2px] w-[33%] border-t-gray-200'></span>
             </div>
             <ul className='flex justify-around items-center pb-2'>
-                <li><button onClick={handleGoogleSignIn}><img src="" alt="gmail icon"/></button></li>
-                <li><img src="" alt="apple icon"/></li>
+                <li><button onClick={handleGoogleSignIn}><SiGmail size={40} color="#D44638"/></button></li>
+                <li><SiApple size={40} color="#000000"/></li>
             </ul>
         </footer>
         </div>

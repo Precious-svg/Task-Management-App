@@ -17,9 +17,9 @@ const SideBar = ({item}) => {
     }
   return (
     <>
-      <li key={item.id} onClick={handleClick}>
-        <div>{item.icon}</div>
-        {item.name}
+      <li key={item.id} onClick={handleClick} className='flex gap-4 items-center justify-center'>
+        <div className='h-8 w-8'>{item.icon}</div>
+        <p className='text-lg'>{item.name}</p>
       </li>
     </>
   )
