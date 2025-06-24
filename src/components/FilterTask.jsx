@@ -2,7 +2,7 @@ import React from 'react'
 import TaskCard from './TaskCard';
 import Loader from './Loader';
 import { useState } from "react"
-import NavBar from '../components/NavBar';
+import NavBar from './NavBar';
 
 import { useTasks } from "../Context/TaskContext"
 

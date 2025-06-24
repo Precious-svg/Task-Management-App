@@ -1,5 +1,5 @@
 import React from 'react';
-import FilteredTask from '../components/filteredTask';
+import FilteredTask from '../components/FilterTask';
 const PendingTasks = () => {
   return (
     <div>
