@@ -14,7 +14,7 @@ import { Navigate } from "react-router-dom";
 import ProtectedRoute from './components/ProtectedRoute';
 import ForgotPassWordPage from './pages/ForgotPassWordPage';
 import EditTaskPage from './pages/EditTaskPage';
-import PendingTasks from './pages/pendingTasks';
+import PendingTasks from './pages/OngoingTasksPage'
 import CompletedTasksPage from './pages/CompletedTasksPage';
 import OngoingTasksPage from './pages/OngoingTasksPage';
 import { useEffect } from 'react';
