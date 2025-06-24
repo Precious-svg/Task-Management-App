@@ -1,6 +1,6 @@
 import React from 'react';
 import { useState } from "react";
-import { sideBarItems } from '../SideBarItems';
+import { sideBarItems } from "../sideBarItems";
 import SideBar from './SideBar';
 import { FaRegWindowClose } from 'react-icons/fa';
 import { FaBars } from 'react-icons/fa6';
