@@ -31,6 +31,7 @@ const LogIn = () => {
             setMsg(error.message)
         }
     };
+    
     let signingIn = false;
     const handleGoogleSignIn = async (e) => {
         if (signingIn) return; // Prevent multiple popups
