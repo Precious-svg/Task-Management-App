@@ -43,9 +43,9 @@ const LogIn = () => {
           }
     }
   return (
-    <section className='bg-slate-50 w-[100%] h-full rounded-lg flex items-center justify-center md:w-[70%] md:mx-auto'>
+    <section className='bg-slate-50 w-[100%] h-full rounded-lg flex items-center justify-center md:w-[70%] md:mx-auto md:place-self-center'>
        
-        <div id="logIn" className="w-full px-7 pb-7">
+        <div id="logIn" className="w-full px-7 pb-7  md:mx-auto lg:place-self-center lg:mx-auto">
            <div>
                  <h2 className='text-3xl font-bold pt-6 pb-3'>Log In</h2>
                  <p className="py-4">Complete the form below to sign in to your account.</p>
