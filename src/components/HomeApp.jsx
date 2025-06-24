@@ -22,7 +22,7 @@ const HomeApp = () => {
        <div className="flex relative flex-col gap-2 min-h-screen bg-gray-100 w-full  md:place-self-center md:w-[70%] lg:w-[60%]">
           <HeaderNavBar/>
           
-          <main className="pb-15  pt-20 mt-4 md:w-full flex-grow md:mx-auto">
+          <main className="pb-15  pt-18 mt-4 md:w-full flex-grow md:mx-auto">
              <span className="py-2 pl-4">Good Morning, User</span>
              <div className="bg-[#fffae6] p-4  text-center">
              ⚠️ This app is currently under development. UI and core features are still being built.
