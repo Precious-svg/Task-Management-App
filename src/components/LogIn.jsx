@@ -43,7 +43,7 @@ const LogIn = () => {
           }
     }
   return (
-    <section className='bg-slate-50 w-[100%] h-full rounded-lg flex items-center justify-center md:w-[70%]'>
+    <section className='bg-slate-50 w-[100%] h-full rounded-lg flex items-center justify-center md:w-[70%] md:mx-auto'>
        
         <div id="logIn" className="w-full px-7 pb-7">
            <div>
@@ -53,8 +53,7 @@ const LogIn = () => {
             <form className='flex flex-col justify-around items-center w-full gap-6'>
                 <input type="email" id="email" name="userEmail" placeholder="Email" value={email} onChange={(e) =>setEmail(e.target.value) }
                  className="bg-gray-200 p-4 w-full rounded-lg"/>
-                 <p>{msg}</p>
-
+                 
                 <input type="password" id="pswrd" name="userPswrd" placeholder="*******"  value={password} onChange={(e) => setPassword(e.target.value)}
                  className="bg-gray-200 p-4 w-full rounded-lg"/>
                  {error && <p>{error}</p>}
@@ -69,6 +68,8 @@ const LogIn = () => {
 
                 <button type="submit" className='place-self-center w-full py-4 rounded-lg bg-indigo-600' onClick={handleLogIn}>Log in</button>
                 {error && <p className='text-red-400 text-[14px] mt-3'>{error}</p>}
+                <p className='text-red-400 text-[14px] mt-3'>{msg}</p>
+
             </form>
             <footer className='w-[100%] flex-col items-center justify-around' >
             <div className='flex justify-between items-center w-full py-6'>
