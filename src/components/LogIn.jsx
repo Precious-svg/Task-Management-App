@@ -11,6 +11,7 @@ const LogIn = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("")
+    const [msg, setMsg] = useState("");
 
 
     const handleLogIn = async (e) => {
@@ -19,6 +20,7 @@ const LogIn = () => {
         console.log("Attempting to log in with:", email, password);
         if(!email || !password){
             console.log("please enter email and password");
+            setMsg("please enter email and password")
             return;
         }
          await logIn(email, password);
@@ -51,6 +53,7 @@ const LogIn = () => {
             <form className='flex flex-col justify-around items-center w-full gap-6'>
                 <input type="email" id="email" name="userEmail" placeholder="Email" value={email} onChange={(e) =>setEmail(e.target.value) }
                  className="bg-gray-200 p-4 w-full rounded-lg"/>
+                 <p>{msg}</p>
 
                 <input type="password" id="pswrd" name="userPswrd" placeholder="*******"  value={password} onChange={(e) => setPassword(e.target.value)}
                  className="bg-gray-200 p-4 w-full rounded-lg"/>
