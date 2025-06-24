@@ -8,7 +8,6 @@ const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
     authDomain: "task-management-app-cdd2f.firebaseapp.com",
     projectId: "task-management-app-cdd2f",
-    storageBucket: "task-management-app-cdd2f.firebasestorage.app",
     messagingSenderId: "363956632950",
     appId: "1:363956632950:web:d6241f613eeaf4840b8e57"
 };
