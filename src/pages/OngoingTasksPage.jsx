@@ -1,10 +1,10 @@
 import React from 'react';
-import FilteredTask from '../components/FilterTask';
+import FilterTask from '../components/FilterTask';
 
 const OngoingTasksPage = () => {
   return (
     <div>
-        <FilteredTask status="ongoing"/>
+        <FilterTask status="ongoing"/>
     </div>
   )
 }

@@ -1,11 +1,11 @@
 import React from 'react';
-import FilteredTask from '../components/FilterTask';
+import FilterTask from '../components/FilterTask';
 
 
 const CompletedTasksPage = () => {
   return (
     <div>
-        <FilteredTask status="completed"/>
+        <FilterTask status="completed"/>
     </div>
   )
 }

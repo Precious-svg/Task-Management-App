@@ -6,7 +6,7 @@ import NavBar from './NavBar';
 
 import { useTasks } from "../Context/TaskContext"
 
-const FilteredTask = ({status}) => {
+const FilterTask = ({status}) => {
     const {tasks, loading} = useTasks()
     
     if (loading) return <Loader/>;
@@ -22,4 +22,4 @@ const FilteredTask = ({status}) => {
   )
 }
 
-export default FilteredTask
+export default FilterTask
