@@ -20,8 +20,7 @@ const AuthProvider = ({children}) => {
     const logIn = async (email, password) =>{
 
         if (!email || !password){
-            setError("Please enter your email and password");
-            return;
+            throw new Error ("Please enter your email and password");
 
         }
         try {
@@ -29,13 +28,12 @@ const AuthProvider = ({children}) => {
             setError(null);
         }catch(error){
             if(error.code === "auth/user-not-found"){
-                console.error("This user does not exist");
-                setError("This user does not exis!. Please sign up")
+                throw new Error("This user does not exist! Please sign up.");
             }else if(error.code === "auth/wrong-password"){
                 console.error("Wrong password");
-                setError("Incorrect password, please input correct password")
+                throw new Error("Incorrect password, please input correct password.");
             } else{
-                console.error("Error signining in:", error);
+                throw new Error("Error signing in: " + error.message);
             };
         }
     }

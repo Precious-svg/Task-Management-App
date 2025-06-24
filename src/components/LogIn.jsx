@@ -14,7 +14,7 @@ const LogIn = () => {
     const [msg, setMsg] = useState("");
 
 
-    const handleLogIn = async (e) => {
+   const handleLogIn = async (e) => {
         e.preventDefault();
         
         console.log("Attempting to log in with:", email, password);
@@ -23,11 +23,13 @@ const LogIn = () => {
             setMsg("please enter email and password")
             return;
         }
-         await logIn(email, password);
-         if(!error) {
+
+        try {
+            await logIn(email, password);
             navigate("/")
+        }catch(error){
+            setMsg(error.message)
         }
-        
     };
     let signingIn = false;
     const handleGoogleSignIn = async (e) => {
