@@ -73,6 +73,8 @@ const LogIn = () => {
                 {error && <p className='text-red-400 text-[14px] mt-3'>{error}</p>}
                 <p className='text-red-400 text-[14px] mt-3'>{msg}</p>
 
+                <NavLink to="/create-account" className='place-self-center w-full py-4 rounded-lg bg-indigo-600' onClick={handleLogIn}>Log in</NavLink>
+
             </form>
             <footer className='w-[100%] flex-col items-center justify-around' >
             <div className='flex justify-between items-center w-full py-6'>
