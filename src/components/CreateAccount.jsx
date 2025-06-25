@@ -59,7 +59,7 @@ const CreateAccount = () => {
   return (
     <div id="createAccount" className='bg-slate-50 w-[100%] h-full rounded-lg'>
         <header className=" flex justify-between px-7 py-6">
-            <i className=''>B</i>
+            <i className=''></i>
             <img src="" alt="cartton icon"/>
         </header>
         <main className="w-full px-7 pb-6">
